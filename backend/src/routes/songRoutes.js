@@ -11,12 +11,24 @@ const {
   deleteSong
 } = require('../controllers/songController');
 
-// Setup routes
+// ✅ CORRECT ROUTES - Match what frontend expects
+
+// GET /api/songs/statistics
+router.get('/statistics', getSongStats);
+
+// GET /api/songs (with optional query params)
 router.get('/', getSongs);
-router.get('/stats', getSongStats);
+
+// GET /api/songs/:id
 router.get('/:id', getSong);
+
+// POST /api/songs
 router.post('/', createSong);
+
+// PUT /api/songs/:id  
 router.put('/:id', updateSong);
+
+// DELETE /api/songs/:id
 router.delete('/:id', deleteSong);
 
 // Export the router

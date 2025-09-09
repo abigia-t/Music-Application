@@ -172,7 +172,7 @@ const FilterBar: React.FC = () => {
           </ClearButton>
         )}
         <FilterButton onClick={applyFilters}>
-          Apply Filters
+          Search
         </FilterButton>
       </ButtonGroup>
     </FilterContainer>

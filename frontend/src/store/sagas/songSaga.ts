@@ -32,9 +32,9 @@ function* fetchSongsSaga(action: ReturnType<typeof actions.fetchSongsStart>): Ge
 // Saga worker: Fetch statistics from API
 function* fetchStatisticsSaga(): Generator<any, any, any> {
   try {
-    console.log('SAGA: Fetching statistics');
+    console.log('SAGA: Fetching statistics from API');
     const statistics = yield call(api.fetchStatistics);
-    console.log('SAGA: Statistics fetched successfully');
+    console.log('SAGA: Statistics fetched successfully:', statistics);
     yield put(actions.fetchStatisticsSuccess(statistics));
   } catch (error: any) {
     console.error('SAGA: Fetch statistics error:', error);
@@ -53,7 +53,7 @@ function* addSongSaga(action: ReturnType<typeof actions.addSongStart>): Generato
     yield put(actions.fetchStatisticsStart()); // Refresh stats
   } catch (error: any) {
     console.error('SAGA: Add song error:', error);
-    yield put(actions.requestFailure(error.message)); // Use requestFailure
+    yield put(actions.requestFailure(error.message));
   }
 }
 
@@ -68,23 +68,22 @@ function* updateSongSaga(action: ReturnType<typeof actions.updateSongStart>): Ge
     yield put(actions.fetchStatisticsStart()); // Refresh stats
   } catch (error: any) {
     console.error('SAGA: Update song error:', error);
-    yield put(actions.requestFailure(error.message)); // Use requestFailure
+    yield put(actions.requestFailure(error.message));
   }
 }
 
-// Saga worker: Delete a song
+// Saga worker: Delete a song - USING REAL API CALL
 function* deleteSongSaga(action: ReturnType<typeof actions.deleteSongStart>): Generator<any, any, any> {
   try {
-    console.log('SAGA: TEST MODE - Simulating delete for ID:', action.payload);
+    console.log('SAGA: Deleting song with ID:', action.payload);
     
-    // Simulate API delay
-    yield new Promise(resolve => setTimeout(resolve, 1000));
+    // REAL API CALL - Remove the test simulation
+    yield call(api.deleteSong, action.payload);
     
-    // Simulate success without API call
-    console.log('SAGA: Simulating successful deletion');
+    console.log('SAGA: Song deleted successfully from API');
     yield put(actions.deleteSongSuccess(action.payload));
     yield put(actions.closeModals());
-    yield put(actions.fetchStatisticsStart());
+    yield put(actions.fetchStatisticsStart()); // Refresh stats
     
   } catch (error: any) {
     console.error('SAGA: Delete song error:', error);

@@ -33,14 +33,14 @@ const getSongStats = async (req, res) => {
   try {
     const totalSongs = await Song.countDocuments();
     const totalArtists = await Song.distinct('artist');
-    const totalAlbums = await Song.distinct('album');
+    const totalAlbums = await Song.distinct('album'); 
     const totalGenres = await Song.distinct('genre');
     
     const songsPerGenre = await Song.aggregate([
       { $group: { _id: '$genre', count: { $sum: 1 } } },
       { $sort: { count: -1 } }
     ]);
-    
+
     res.json({
       totalSongs,
       totalArtists: totalArtists.length,
