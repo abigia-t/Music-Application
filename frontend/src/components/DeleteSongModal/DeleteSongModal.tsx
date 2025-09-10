@@ -4,7 +4,7 @@ import { songActions } from '../../store/slices';
 import Modal from '../Modal/Modal';
 import styled from '@emotion/styled';
 
-// Add the missing ButtonContainer styled component
+// Add all the missing styled components
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
@@ -115,30 +115,34 @@ const DeleteSongModal: React.FC = () => {
   }, [modals.deleteSong]);
 
   useEffect(() => {
-    // Show success message after successful deletion
-    if (showSuccess) {
+    // Show success message after successful deletion (when loading becomes false and no error)
+    if (!loading && !error && deletedSongName) {
+      setShowSuccess(true);
+      
       const timer = setTimeout(() => {
         dispatch(songActions.closeModals());
         setShowSuccess(false);
+        setDeletedSongName('');
       }, 2000);
 
       return () => clearTimeout(timer);
     }
-  }, [showSuccess, dispatch]);
+  }, [loading, error, deletedSongName, dispatch]);
 
   const handleConfirmDelete = () => {
     if (modals.selectedSong?._id) {
-      console.log('Modal: Directly deleting song with ID:', modals.selectedSong._id);
+      console.log('Modal: Starting delete process for song ID:', modals.selectedSong._id);
       setDeletedSongName(modals.selectedSong.title);
       
-      // Use deleteSong action directly
-      dispatch(songActions.deleteSong(modals.selectedSong._id));
-      setShowSuccess(true);
+      // Use deleteSongStart action (ASYNC - will trigger API call via saga)
+      dispatch(songActions.deleteSongStart(modals.selectedSong._id));
     }
   };
 
   const handleClose = () => {
-    dispatch(songActions.closeModals());
+    if (!loading) { // Prevent closing while deletion is in progress
+      dispatch(songActions.closeModals());
+    }
   };
 
   if (!modals.selectedSong) return null;
@@ -148,6 +152,7 @@ const DeleteSongModal: React.FC = () => {
       isOpen={modals.deleteSong}
       onClose={handleClose}
       title={showSuccess ? "Success!" : "Confirm Deletion"}
+      disableClose={loading} // Prevent closing while loading
     >
       <div>
         {showSuccess ? (
@@ -178,6 +183,10 @@ const DeleteSongModal: React.FC = () => {
               )}
             </SongInfo>
 
+            {loading && (
+              <LoadingText>Deleting song from database...</LoadingText>
+            )}
+
             {error && (
               <ErrorMessage>
                 Error: {error}
@@ -185,11 +194,11 @@ const DeleteSongModal: React.FC = () => {
             )}
 
             <ButtonContainer>
-              <CancelButton onClick={handleClose}>
-                Cancel
+              <CancelButton onClick={handleClose} disabled={loading}>
+                {loading ? 'Cancelling...' : 'Cancel'}
               </CancelButton>
-              <ConfirmDeleteButton onClick={handleConfirmDelete}>
-                Yes, Delete
+              <ConfirmDeleteButton onClick={handleConfirmDelete} disabled={loading}>
+                {loading ? 'Deleting...' : 'Yes, Delete'}
               </ConfirmDeleteButton>
             </ButtonContainer>
           </>

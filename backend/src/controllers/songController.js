@@ -86,17 +86,20 @@ const createSong = async (req, res) => {
 // Update song
 const updateSong = async (req, res) => {
   try {
-    const song = await Song.findById(req.params.id);
-    if (!song) {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    // Use findByIdAndUpdate with { new: true } to return updated document
+    const updatedSong = await Song.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true } // Return updated doc and validate
+    );
+    
+    if (!updatedSong) {
       return res.status(404).json({ message: 'Song not found' });
     }
     
-    if (req.body.title != null) song.title = req.body.title;
-    if (req.body.artist != null) song.artist = req.body.artist;
-    if (req.body.album != null) song.album = req.body.album;
-    if (req.body.genre != null) song.genre = req.body.genre;
-    
-    const updatedSong = await song.save();
     res.json(updatedSong);
   } catch (error) {
     res.status(400).json({ message: error.message });

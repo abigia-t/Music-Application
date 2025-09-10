@@ -2,7 +2,7 @@
 import { all } from 'redux-saga/effects';
 
 // Import our saga watchers
-import { watchFetchSongs, watchFetchStatistics, watchAddSong } from './songSaga';
+import { watchFetchSongs, watchFetchStatistics, watchAddSong, watchUpdateSong, watchDeleteSong } from './songSaga';
 
 // Root saga: Combine all individual sagas
 export default function* rootSaga() {
@@ -11,5 +11,7 @@ export default function* rootSaga() {
     watchFetchSongs(),
     watchFetchStatistics(),
     watchAddSong(),
+    watchUpdateSong(),
+    watchDeleteSong(),
   ]);
 }

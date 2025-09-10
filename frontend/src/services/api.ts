@@ -94,7 +94,10 @@ export const updateSong = async (id: string, updates: Partial<Song>): Promise<So
     },
     body: JSON.stringify(updates),
   });
-  return handleResponse(response);
+  
+  const data = await handleResponse(response);
+  console.log('API: Update response:', data);
+  return data;
 };
 
 // DELETE a song by ID

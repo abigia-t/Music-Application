@@ -57,27 +57,40 @@ function* addSongSaga(action: ReturnType<typeof actions.addSongStart>): Generato
   }
 }
 
-// Saga worker: Update a song
+// Saga worker: Update a song - FIXED
 function* updateSongSaga(action: ReturnType<typeof actions.updateSongStart>): Generator<any, any, any> {
   try {
-    console.log('SAGA: Updating song:', action.payload._id, 'with data:', action.payload);
-    const updatedSong = yield call(api.updateSong, action.payload._id!, action.payload);
+    console.log('SAGA: Updating song with payload:', action.payload);
+    
+    // Extract the ID and create updates object without _id
+    const { _id, ...updates } = action.payload;
+    
+    if (!_id) {
+      throw new Error('Song ID is required for update');
+    }
+    
+    console.log('SAGA: Calling api.updateSong with id:', _id, 'and updates:', updates);
+    
+    // Call the API with correct signature: id string + Partial<Song> updates
+    const updatedSong = yield call(api.updateSong, _id, updates);
+    
     console.log('SAGA: Song updated successfully:', updatedSong);
     yield put(actions.updateSongSuccess(updatedSong));
     yield put(actions.closeModals());
-    yield put(actions.fetchStatisticsStart()); // Refresh stats
+    yield put(actions.fetchStatisticsStart());
+    
   } catch (error: any) {
     console.error('SAGA: Update song error:', error);
     yield put(actions.requestFailure(error.message));
   }
 }
 
-// Saga worker: Delete a song - USING REAL API CALL
+// Saga worker: Delete a song
 function* deleteSongSaga(action: ReturnType<typeof actions.deleteSongStart>): Generator<any, any, any> {
   try {
     console.log('SAGA: Deleting song with ID:', action.payload);
     
-    // REAL API CALL - Remove the test simulation
+    // Use the same pattern as updateSong
     yield call(api.deleteSong, action.payload);
     
     console.log('SAGA: Song deleted successfully from API');

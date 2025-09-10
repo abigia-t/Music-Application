@@ -88,7 +88,7 @@ const songSlice = createSlice({
       state.error = null;
     },
     
-    // Action: Start updating a song (will be handled by saga)
+    // Action: Start updating a song (will be handled by saga) - ONLY ONE DEFINITION
     updateSongStart: (state, action: PayloadAction<Song>) => {
       console.log('SLICE: updateSongStart - ID:', action.payload._id);
       state.loading = true;
@@ -114,13 +114,15 @@ const songSlice = createSlice({
     
     // Action: Update an existing song (on success)
     updateSongSuccess: (state, action: PayloadAction<Song>) => {
-      console.log('SLICE: updateSongSuccess - ID:', action.payload._id);
+      console.log('SLICE: updateSongSuccess - Updated song:', action.payload);
       const index = state.songs.findIndex(song => song._id === action.payload._id);
       if (index !== -1) {
         state.songs[index] = action.payload;
       }
       state.loading = false;
       state.error = null;
+      state.modals.editSong = false;
+      state.modals.selectedSong = null;
     },
     
     // Action: Remove a song from the state (on success)
