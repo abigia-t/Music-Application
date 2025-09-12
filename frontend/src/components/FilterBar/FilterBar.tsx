@@ -99,7 +99,7 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: 12px;
   align-self: flex-end;
-  margin-top: 24px;
+  margin-top: 5px;
 `;
 
 const FilterBar: React.FC = () => {
@@ -136,7 +136,7 @@ const FilterBar: React.FC = () => {
   return (
     <FilterContainer>
       <FilterGroup>
-        <FilterLabel>Artist</FilterLabel>
+        <FilterLabel></FilterLabel>
         <FilterInput
           placeholder="Search artists..."
           value={filters.artist}
@@ -146,7 +146,7 @@ const FilterBar: React.FC = () => {
       </FilterGroup>
       
       <FilterGroup>
-        <FilterLabel>Album</FilterLabel>
+        <FilterLabel></FilterLabel>
         <FilterInput
           placeholder="Search albums..."
           value={filters.album}
@@ -156,7 +156,7 @@ const FilterBar: React.FC = () => {
       </FilterGroup>
       
       <FilterGroup>
-        <FilterLabel>Genre</FilterLabel>
+        <FilterLabel></FilterLabel>
         <FilterInput
           placeholder="Search genres..."
           value={filters.genre}
