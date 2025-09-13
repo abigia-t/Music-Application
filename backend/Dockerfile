@@ -1,27 +1,23 @@
-# Use Node.js version 18
+# Use official Node.js runtime as base image
 FROM node:18-alpine
 
-# Set working directory inside container
+# Set working directory in the container
 WORKDIR /app
 
-# Copy package files first (helps with caching)
+# Copy package.json and package-lock.json first (for better caching)
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm install --only=production
+# Install dependencies
+RUN npm ci --only=production
 
-# Copy all other files
+# Copy the rest of the application code
 COPY . .
 
-# Expose port 5000
+# Expose the port the app runs on
 EXPOSE 5000
 
-# Set environment variables
+# Define environment variable
 ENV NODE_ENV=production
-ENV PORT=5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:5000/health || exit 1
-
-# Start the application
+# Command to run the application
 CMD ["npm", "start"]
