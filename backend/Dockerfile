@@ -1,23 +1,17 @@
-# Use official Node.js runtime as base image
 FROM node:18-alpine
 
-# Set working directory in the container
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 WORKDIR /app
-
-# Copy package.json and package-lock.json first (for better caching)
 COPY package*.json ./
-
-# Install dependencies
 RUN npm ci --only=production
-
-# Copy the rest of the application code
 COPY . .
-
-# Expose the port the app runs on
 EXPOSE 5000
 
-# Define environment variable
-ENV NODE_ENV=production
+# Run as non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
+USER nextjs
 
-# Command to run the application
 CMD ["npm", "start"]

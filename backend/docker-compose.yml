@@ -4,23 +4,16 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=development
-      - MONGODB_URI=mongodb://mongo:27017/musicdb
-    volumes:
-      - .:/app
-      - /app/node_modules
-    depends_on:
-      - mongo
-    command: npm run dev
-
-  mongo:
-    image: mongo:6.0
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=musicdb
-
-volumes:
-  mongodb_data:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
