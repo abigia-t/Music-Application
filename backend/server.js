@@ -20,15 +20,10 @@ app.use(express.json());
 app.use('/api/songs', songRoutes);
 
 // Health check endpoint
-app.get('/', (req, res) => {
-  res.status(200).json({
-    message: '🎵 Music API Server is Running!',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      songs: '/api/songs',
-      documentation: 'Check README for API documentation'
-    },
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'Server is running successfully',
     timestamp: new Date().toISOString()
   });
 });
