@@ -2,7 +2,7 @@
 import { Song, SongStatistics, FilterOptions } from '../types';
 
 // Base API URL - points to backend server on port 5000
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://music-application-x0li.onrender.com/api';
 
 // Helper function to handle API responses consistently
 const handleResponse = async (response: Response): Promise<any> => {
